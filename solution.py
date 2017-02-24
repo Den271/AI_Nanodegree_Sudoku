@@ -24,21 +24,24 @@ boxes = cross(rows, cols)   #enumerate all boxes in A1-like form, i.e. A1, A2, .
 row_units = [cross(r, cols) for r in rows]      # [['A1', 'A2',...,'A9'],['B1', 'B2', ..., 'B9'],...,[...,'I9']]
 column_units = [cross(rows, c) for c in cols]   #[[A1,B1,...,],...,[]]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')] # all square units
+
 # let's add the diagonal units, 
 # left-top to right-bottom diagonal: A1, B2, ..., I9
-left_top_right_bottom_units= [r+c for r,c in zip(rows, cols)]
+diagonal1= [r+c for r,c in zip(rows, cols)]
 #left-bottom to right-top diagonal: A1, B2, ..., I9                 
-left_bottom_right_top_units= [r+c for r,c in zip(rows[::-1], cols)]
+diagonal2= [r+c for r,c in zip(rows[::-1], cols)]
 
-unitlist = row_units + column_units + square_units + [left_top_right_bottom_units , left_bottom_right_top_units]
-
+unitlist = row_units + column_units + square_units + [diagonal1 , diagonal2]
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
+#Row units
 unitsRow = dict((s, [u for u in row_units if s in u]) for s in boxes)
+#Row peers
 peersRow = dict((s, set(sum(unitsRow[s],[]))-set([s])) for s in boxes)
-
+#Col units
 unitsCol = dict((s, [u for u in column_units if s in u]) for s in boxes)
+#Col peers
 peersCol = dict((s, set(sum(unitsCol[s],[]))-set([s])) for s in boxes)
 
 def grid_values(grid):
@@ -85,18 +88,19 @@ def naked_twins(values):
     pairs_values = [box for box in values.keys() if len(values[box]) == 2] # limit the number of boxes to the
     for box in pairs_values:
         digit2 = values[box]
+        
         #eliminate Row twins if any
         for peer1 in peersRow[box]:
             if values[peer1]==digit2 : #if naked twin found in a row peersRow[box]
                 for peer2 in peersRow[box]:
                     if peer2!=peer1 : # for the rest of the row
-                        values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'')
+                        values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'') #eliminate naked twin values
         #eliminate Row twins if any
         for peer1 in peersCol[box]:
-            if values[peer1]==digit2 : #if naked twin found in a col peersRow[box]
+            if values[peer1]==digit2 : #if naked twin found in a col peersCol[box]
                 for peer2 in peersCol[box]:
-                    if peer2!=peer1 : # for the rest of the row
-                        values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'')
+                    if peer2!=peer1 : # for the rest of the col
+                        values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'') #eliminate naked twin values
                         
     return values
 

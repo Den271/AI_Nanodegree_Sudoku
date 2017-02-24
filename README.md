@@ -3,11 +3,19 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: The idea of solving the naked twins problem is to add the additional constraint propagation code:
+	1) naked_twins(values) is implemented
+	1.1) Find all possible instances of values of len==2, and for every candidate of len==2
+	1.2) if naked twins found in a row peersRow[box], then for the rest of the row, eliminate naked twin values
+	1.3) if naked twins found in a col peersCol[box], then for the rest of the row, eliminate naked twin values
+	1.4) Done
+	2) it called from reduce_puzzle(values) right after eliminate(values)
+	3) So that after the implementing the constraints it search for naked twins in rows and columns, and if found, eliminates twins its values from the rest of the string or column
+	
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: To solve it, the two additional diagonal units sub-list have been added into unitlist. So that eliminate(values) function can use it to propagate constraints furthermore, including two diagonal constraint
 
 ### Install
 

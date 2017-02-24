@@ -35,6 +35,11 @@ unitlist = row_units + column_units + square_units + [left_top_right_bottom_unit
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
+unitsRow = dict((s, [u for u in row_units if s in u]) for s in boxes)
+peersRow = dict((s, set(sum(unitsRow[s],[]))-set([s])) for s in boxes)
+
+unitsCol = dict((s, [u for u in column_units if s in u]) for s in boxes)
+peersCol = dict((s, set(sum(unitsCol[s],[]))-set([s])) for s in boxes)
 
 def grid_values(grid):
     """
@@ -76,8 +81,25 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-
     # Find all instances of naked twins
+    pairs_values = [box for box in values.keys() if len(values[box]) == 2] # limit the number of boxes to the
+    for box in pairs_values:
+        digit2 = values[box]
+        #eliminate Row twins if any
+        for peer1 in peersRow[box]:
+            if values[peer1]==digit2 : #if naked twin found in a row peersRow[box]
+                for peer2 in peersRow[box]:
+                    if peer2!=peer1 : # for the rest of the row
+                        values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'')
+        #eliminate Row twins if any
+        for peer1 in peersCol[box]:
+            if values[peer1]==digit2 : #if naked twin found in a col peersRow[box]
+                for peer2 in peersCol[box]:
+                    if peer2!=peer1 : # for the rest of the row
+                        values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'')
+                        
+    return values
+
     # Eliminate the naked twins as possibilities for their peers
     
     return values

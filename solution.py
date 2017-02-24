@@ -95,12 +95,14 @@ def naked_twins(values):
                 for peer2 in peersRow[box]:
                     if peer2!=peer1 : # for the rest of the row
                         values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'') #eliminate naked twin values
+                        assign_value(values, peer2, values[peer2])
         #eliminate Row twins if any
         for peer1 in peersCol[box]:
             if values[peer1]==digit2 : #if naked twin found in a col peersCol[box]
                 for peer2 in peersCol[box]:
                     if peer2!=peer1 : # for the rest of the col
                         values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'') #eliminate naked twin values
+                        assign_value(values, peer2, values[peer2])
                         
     return values
 
@@ -119,6 +121,8 @@ def eliminate(values):
         digit = values[box]
         for peer in peers[box]:
             values[peer] = values[peer].replace(digit,'')
+            assign_value(values, peer, values[peer])
+            
     return values
 
 def only_choice(values):
@@ -132,6 +136,8 @@ def only_choice(values):
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
                 values[dplaces[0]] = digit
+                assign_value(values, dplaces[0], digit)
+                      
     return values
 
 def reduce_puzzle(values):

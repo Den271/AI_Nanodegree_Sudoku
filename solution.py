@@ -89,6 +89,7 @@ def naked_twins(values):
     for box in pairs_values:
         digit2 = values[box]
         
+        # Eliminate the naked twins as possibilities for their peers
         #eliminate Row twins if any
         for peer1 in peersRow[box]:
             if values[peer1]==digit2 : #if naked twin found in a row peersRow[box]
@@ -106,9 +107,6 @@ def naked_twins(values):
                         
     return values
 
-    # Eliminate the naked twins as possibilities for their peers
-    
-    return values
 
 def eliminate(values):
     """

@@ -1,4 +1,7 @@
+import logging
 assignments = []
+logging.basicConfig(filename='solution.py.log',level=logging.DEBUG)
+
 
 def assign_value(values, box, value):
     """
@@ -26,12 +29,11 @@ column_units = [cross(rows, c) for c in cols]   #[[A1,B1,...,],...,[]]
 square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')] # all square units
 
 # let's add the diagonal units, 
-# left-top to right-bottom diagonal: A1, B2, ..., I9
-diagonal1= [r+c for r,c in zip(rows, cols)]
-#left-bottom to right-top diagonal: A1, B2, ..., I9                 
-diagonal2= [r+c for r,c in zip(rows[::-1], cols)]
+# left-top to right-bottom diagonal: A1, ..., I9
+# left-bottom to right-top diagonal: I1, ..., A9                 
+diagonal_units = [[r+c for r,c in zip(rows,cols)], [r+c for r,c in zip(rows,cols[::-1])]]
 
-unitlist = row_units + column_units + square_units + [diagonal1 , diagonal2]
+unitlist = row_units + column_units + square_units + diagonal_units
 units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
 peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
@@ -86,7 +88,7 @@ def naked_twins(values):
     """
     # Find all instances of naked twins
     pairs_values = [box for box in values.keys() if len(values[box]) == 2] # limit the number of boxes to the
-    for box in pairs_values:
+    for box in pairs_values:    #pairs_values - twin candidates
         digit2 = values[box]
         
         # Eliminate the naked twins as possibilities for their peers
@@ -97,7 +99,7 @@ def naked_twins(values):
                     if peer2!=peer1 : # for the rest of the row
                         values[peer2] = values[peer2].replace(digit2[0],'').replace(digit2[1],'') #eliminate naked twin values
                         assign_value(values, peer2, values[peer2])
-        #eliminate Row twins if any
+        #eliminate Col twins if any
         for peer1 in peersCol[box]:
             if values[peer1]==digit2 : #if naked twin found in a col peersCol[box]
                 for peer2 in peersCol[box]:
